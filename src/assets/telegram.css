@@ -1,0 +1,46 @@
+:root {
+  --tg-border-radius: 12px;
+  --tg-hint-color: #707579;
+  --tg-secondary-bg-color: #f4f4f5;
+}
+
+.tg-theme-bg {
+  background: var(--tg-theme-bg-color, #ffffff);
+}
+
+.tg-theme-text {
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.tg-button {
+  background: var(--tg-theme-button-color, #2481cc);
+  border-radius: var(--tg-border-radius);
+  padding: 12px 20px;
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tg-button:hover {
+  opacity: 0.9;
+}
+
+.tg-button.secondary {
+  background: var(--tg-theme-secondary-bg-color, var(--tg-secondary-bg-color));
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.tg-button.danger {
+  background: #e53935;
+}
+
+.tg-button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
