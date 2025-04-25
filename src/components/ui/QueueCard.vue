@@ -10,7 +10,10 @@
 </template>
 
 <script>
+import StatusBadge from "@/components/ui/StatusBadge.vue";
+
 export default {
+  components: {StatusBadge},
   props: {
     queue: {
       type: Object,

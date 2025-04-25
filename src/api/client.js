@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Create an axios instance with base URL from env
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://altpoint.romaaaka.ru/',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://roma.office.alt-point.com/api/',
 });
 
 // Automatically attach Telegram initData header for auth on every request
@@ -102,4 +102,22 @@ export function deleteShareQueue(shareId) {
  */
 export function activateShareQueue(payload) {
   return http.post('/queue-share/activate/', payload).then(res => res.data);
+}
+
+/**
+ * List users with optional filter
+ * @param {object} params - { filter_query: JSON.stringify({ username: "john" }), offset?, limit? }
+ * @returns {Promise<object>} OffsetPagination of UserSchema
+ */
+export function listUsers(params = {}) {
+  return http.get('/user/', { params }).then(res => res.data)
+}
+
+/**
+ * Get user by ID
+ * @param {number} userId
+ * @returns {Promise<object>} UserSchema
+ */
+export function getUser(userId) {
+  return http.get(`/user/${userId}/`).then(res => res.data)
 }

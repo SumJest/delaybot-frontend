@@ -22,22 +22,29 @@
 
       <div class="shares-section" v-if="shares.items?.length">
         <h3>Доступы</h3>
-        <div v-for="share in shares.items" :key="share.id" class="share-item">
+        <div
+            v-for="share in shares.items"
+            :key="share.id"
+            class="share-item"
+            @click="openViewShareModal(share)"
+        >
           <p>Токен: {{ share.token }}</p>
           <p>Истекает: {{ formatDate(share.expires_at) }}</p>
-          <button class="tg-button danger" @click="deleteShare(share.id)">
+          <p>Права: {{ share.can_manage ? 'Управление' : 'Просмотр' }}</p>
+          <button class="tg-button danger" @click.stop="deleteShare(share.id)">
             Удалить
           </button>
         </div>
       </div>
-    </div>
 
-    <ShareLinkModal
-      v-if="showShareModal"
-      :queue-id="queue.id"
-      @close="showShareModal = false"
-      @created="handleShareCreated"
-    />
+      <ShareLinkModal
+          v-if="showShareModal"
+          :queue-id="queue.id"
+          :share="selectedShare"
+          @close="closeShareModal"
+          @created="handleShareCreated"
+      />
+    </div>
   </div>
 </template>
 
@@ -56,14 +63,25 @@ import {deleteShareQueue} from "@/api/client.js";
 const route = useRoute()
 const router = useRouter()
 const store = useQueueStore()
+
 const showShareModal = ref(false)
+const selectedShare = ref(null)
 
 const queue = ref({ members: [] })
+
 const shares = ref({ items: [] })
+
+const openViewShareModal = (share) => {
+  selectedShare.value = share
+  showShareModal.value = true
+}
 
 onMounted(async () => {
   await store.fetchQueueDetails(route.params.id)
-  queue.value = store.currentQueue
+  queue.value = {
+    ...store.currentQueue,
+    members: [...store.currentQueue.members] // Клонируем массив
+  }
   await store.fetchShares(route.params.id)
   shares.value = store.shares
 })
@@ -74,8 +92,10 @@ const toggleQueueStatus = async () => {
 }
 
 const updateMembers = async (newMembers) => {
-  await store.updateCurrentQueue({ members: newMembers })
-  queue.value.members = newMembers
+  await store.updateCurrentQueue({
+    members: newMembers.map(u => u.id) // Отправляем только ID на сервер
+  })
+  queue.value.members = [...newMembers] // Обновляем локальные данные полными объектами
 }
 
 const handleDelete = async () => {
@@ -89,10 +109,16 @@ const deleteShare = async (shareId) => {
   shares.value = store.shares
 }
 
+const closeShareModal = () => {
+  selectedShare.value = null
+  showShareModal.value = false
+}
+
 const handleShareCreated = async () => {
   await store.fetchShares(route.params.id)
   shares.value = store.shares
 }
+
 </script>
 
 <style scoped>

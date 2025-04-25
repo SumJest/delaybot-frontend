@@ -14,7 +14,7 @@ export default {
     const router = useRouter()
     onMounted(() => {
       Telegram.WebApp.expand()
-      Telegram.WebApp.enableClosingConfirmation()
+      Telegram.WebApp.disableClosingConfirmation()
       Telegram.WebApp.setHeaderColor('#2481cc')
       Telegram.WebApp.setBackgroundColor('#f5f5f5')
       console.log(window.Telegram?.WebApp?.initDataUnsafe?.start_param)

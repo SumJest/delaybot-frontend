@@ -13,7 +13,7 @@ app.use(router)
 if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready()
   Telegram.WebApp.expand()
-  Telegram.WebApp.enableClosingConfirmation()
+  Telegram.WebApp.disableClosingConfirmation()
 
   // // Устанавливаем цвета из Telegram
   // document.documentElement.style.setProperty(

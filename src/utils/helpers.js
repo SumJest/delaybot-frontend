@@ -1,3 +1,5 @@
+import {Base64UrlSafe} from "@aecworks/base64-url-safe";
+
 export const formatDate = (dateString) => {
   const options = {
     year: 'numeric',
@@ -15,4 +17,19 @@ export const initTelegramWebApp = () => {
     Telegram.WebApp.expand()
     Telegram.WebApp.enableClosingConfirmation()
   }
+}
+export const debounce = (callback, wait) => {
+  let timeoutId = null;
+  return (...args) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
+      callback(...args);
+    }, wait);
+  };
+}
+
+export const generateLink = (token) => {
+  const payload = JSON.stringify({ action: "share", token })
+  const base64Encoded = Base64UrlSafe.encode(payload, true)
+  return `https://t.me/queueeebot?startapp=${base64Encoded}`
 }

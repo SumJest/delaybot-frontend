@@ -6,7 +6,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [vue()],
   server: {
-    allowedHosts: ['delaybot.home.romaaaka.ru']
+    allowedHosts: ['delaybot.home.romaaaka.ru', 'roma.office.alt-point.com']
   },
   resolve: {
   alias: {
