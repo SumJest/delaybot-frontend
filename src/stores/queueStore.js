@@ -33,27 +33,32 @@ export const useQueueStore = defineStore('queue', {
     userError: null,
 
     loading: false,
+    listQueuesLoading: false,
+    deleteQueueLoading: false,
+    queueDetailsLoading: false,
+    sharesLoading: false,
     error: null
   }),
   actions: {
     async fetchQueues(params = {}) {
-      this.loading = true
+      this.listQueuesLoading = true
       try {
         const response = await listQueues({
           offset: params.offset || 0,
           limit: params.limit || 10
         })
+        console.log(response)
         this.queues = response
       } catch (error) {
         this.error = error
         throw error
       } finally {
-        this.loading = false
+        this.listQueuesLoading = false
       }
     },
 
     async deleteQueue(id) {
-      this.loading = true
+      this.deleteQueueLoading = true
       try {
         await deleteQueue(id)
         if (this.queues?.items) {
@@ -68,18 +73,18 @@ export const useQueueStore = defineStore('queue', {
         this.error = error
         throw error
       } finally {
-        this.loading = false
+        this.deleteQueueLoading = false
       }
     },
 
     async fetchQueueDetails(id) {
-      this.loading = true
+      this.queueDetailsLoading = true
       try {
         this.currentQueue = await getQueue(id)
       } catch (error) {
         this.error = error
       } finally {
-        this.loading = false
+        this.queueDetailsLoading = false
       }
     },
 
@@ -96,13 +101,13 @@ export const useQueueStore = defineStore('queue', {
     },
 
     async fetchShares(queueId) {
-      this.loading = true
+      this.sharesLoading = true
       try {
         this.shares = await listShareQueues({ queue_id: queueId })
       } catch (error) {
         this.error = error
       } finally {
-        this.loading = false
+        this.sharesLoading = false
       }
     },
 

@@ -7,34 +7,33 @@
         @share="showShareModal = true"
       />
     </AppHeader>
-
     <div class="queue-content">
       <div class="queue-meta">
-        <StatusBadge :closed="queue.closed" @toggle="toggleQueueStatus" />
-        <p>Создана: {{ formatDate(queue.created_at) }}</p>
-        <p>Участников: {{ queue.members.length }}</p>
+        <StatusBadge
+            :closed="queue.closed"
+            @toggle="toggleQueueStatus"
+            v-shimmer="store.queueDetailsLoading"
+        />
+        <p v-shimmer="store.queueDetailsLoading">Создана: {{ formatDate(queue.created_at) }}</p>
+        <p v-shimmer="store.queueDetailsLoading">Кол-во участников: {{ queue.members.length }}</p>
       </div>
-
       <MembersEditor
         :members="queue.members"
         @update="updateMembers"
       />
+      <MemberItemShimmer v-for="i in [0, 1]" v-if="store.queueDetailsLoading"/>
 
-      <div class="shares-section" v-if="shares.items?.length">
+      <div class="shares-section" v-if="shares.items?.length || store.queueDetailsLoading">
         <h3>Доступы</h3>
-        <div
+        <ShareItem
             v-for="share in shares.items"
             :key="share.id"
-            class="share-item"
-            @click="openViewShareModal(share)"
-        >
-          <p>Токен: {{ share.token }}</p>
-          <p>Истекает: {{ formatDate(share.expires_at) }}</p>
-          <p>Права: {{ share.can_manage ? 'Управление' : 'Просмотр' }}</p>
-          <button class="tg-button danger" @click.stop="deleteShare(share.id)">
-            Удалить
-          </button>
-        </div>
+            :share="share"
+            :format-date="formatDate"
+            @view-share="openViewShareModal"
+            @delete-share="deleteShare"
+            v-if="!store.queueDetailsLoading" />
+        <ShareItemShimmer v-else />
       </div>
 
       <ShareLinkModal
@@ -59,6 +58,10 @@ import MembersEditor from '@/components/ui/MembersEditor.vue'
 import ShareLinkModal from '@/components/ui/ShareLinkModal.vue'
 import QueueActions from '@/components/ui/QueueActions.vue'
 import {deleteShareQueue} from "@/api/client.js";
+import Shimmer from "@/components/ui/shimmers/Shimmer.vue";
+import MemberItemShimmer from "@/components/ui/shimmers/MemberItemShimmer.vue";
+import ShareItem from "@/components/ui/ShareItem.vue";
+import ShareItemShimmer from "@/components/ui/shimmers/ShareItemShimmer.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -137,16 +140,5 @@ const handleShareCreated = async () => {
 
 .shares-section {
   margin-top: 2rem;
-}
-
-.share-item {
-  background: rgba(0,0,0,0.05);
-  padding: 1rem;
-  border-radius: var(--tg-border-radius);
-  margin-bottom: 1rem;
-}
-
-.tg-button.danger {
-  background: #e53935;
 }
 </style>

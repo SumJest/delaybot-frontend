@@ -1,0 +1,28 @@
+.shimmer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+            to right,
+            var(--tg-theme-secondary-bg-color, #eeeeee) 0%,
+            var(--tg-theme-hint-color, #dddddd) 20%,
+            var(--tg-theme-secondary-bg-color, #eeeeee) 40%,
+            var(--tg-theme-secondary-bg-color, #eeeeee) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius:var(--tg-border-radius);
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}

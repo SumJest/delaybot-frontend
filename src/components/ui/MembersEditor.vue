@@ -32,18 +32,7 @@
         @end="onDragEnd"
     >
       <template #item="{ element }">
-        <div class="member-item drag-handle">
-          <span class="member-info">
-            {{ element.first_name || '' }} {{ element.last_name || '' }}
-            <small>@{{ element.username || '' }}</small>
-          </span>
-          <button
-              @click="removeMember(element.id)"
-              class="tg-button danger small"
-          >
-            ×
-          </button>
-        </div>
+        <MemberItem :element="element" @delete="removeMember" class="drag-handle" />
       </template>
     </draggable>
   </div>
@@ -54,6 +43,7 @@ import { ref, watch } from 'vue'
 import draggable from 'vuedraggable'
 import { useQueueStore } from "@/stores/queueStore.js";
 import {debounce} from "@/utils/helpers.js"
+import MemberItem from "@/components/ui/MemberItem.vue";
 
 const props = defineProps({
   members: {
@@ -148,35 +138,8 @@ const removeMember = (id) => {
   background: #f0f0f0;
 }
 
-.members-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.member-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: var(--tg-border-radius);
-  background: var(--tg-theme-bg-color);
-}
-
 .drag-handle {
   cursor: grab;
   user-select: none;
-}
-
-.member-info {
-  flex: 1;
-  word-break: break-word;
-}
-
-.tg-button.small {
-  padding: 0.3rem 0.5rem;
-  width: 2rem;
 }
 </style>

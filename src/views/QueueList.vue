@@ -1,15 +1,15 @@
 <template>
   <div class="queue-list">
     <AppHeader title="Мои очереди" />
-
-    <div v-for="queue in queues" :key="queue.id">
+    <QueueCardShimmer v-if="store.listQueuesLoading" />
+    <div v-for="queue in queues.items" :key="queue.id" v-else>
       <QueueCard :queue="queue" />
     </div>
 
     <PaginationControls
-      :offset="offset"
-      :limit="limit"
-      :total="total"
+      :offset="queues.offset"
+      :limit="queues.limit"
+      :total="queues.total"
       @update="fetchQueues"
     />
   </div>
@@ -22,29 +22,28 @@ import QueueCard from '@/components/ui/QueueCard.vue'
 import PaginationControls from '@/components/ui/PaginationControls.vue'
 import {listQueues} from "@/api/client.js";
 import AppHeader from "@/components/AppHeader.vue";
+import {useQueueStore} from "@/stores/queueStore.js";
+import {storeToRefs} from "pinia";
+import Shimmer from "@/components/ui/shimmers/Shimmer.vue";
+import StatusBadge from "@/components/ui/StatusBadge.vue";
+import QueueCardShimmer from "@/components/ui/shimmers/QueueCardShimmer.vue";
 
 export default {
-  components: {AppHeader, QueueCard, PaginationControls },
+  components: {QueueCardShimmer, StatusBadge, Shimmer, AppHeader, QueueCard, PaginationControls },
   setup() {
-    const queues = ref([])
-    const total = ref(0)
-    const offset = ref(0)
-    const limit = ref(10)
+    // const queues = ref([])
+    // const total = ref(0)
+    // const offset = ref(0)
+    // const limit = ref(10)
 
-    const fetchQueues = async (newOffset = 0) => {
-      try {
-        const data = await listQueues({limit: limit.value, offset: newOffset})
-        queues.value = data.items
-        total.value = data.total
-        offset.value = newOffset
-      } catch (error) {
-        console.error('Ошибка загрузки очередей:', error)
-      }
-    }
+    const store = useQueueStore()
+    const {queues} = storeToRefs(store)
 
-    onMounted(fetchQueues)
+    onMounted(() => store.fetchQueues())
 
-    return { queues, total, offset, limit, fetchQueues }
+    return { fetchQueues: store.fetchQueues,
+            queues,
+    store}
   }
 }
 </script>

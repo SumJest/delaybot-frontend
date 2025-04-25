@@ -3,12 +3,14 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import './assets/telegram.css'
+import shimmerDirective from './directives/shimmer'
+import './assets/shimmer.css'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-
+app.directive('shimmer', shimmerDirective)
 // Инициализация Telegram WebApp
 if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready()

@@ -28,8 +28,19 @@ export const debounce = (callback, wait) => {
   };
 }
 
-export const generateLink = (token) => {
-  const payload = JSON.stringify({ action: "share", token })
-  const base64Encoded = Base64UrlSafe.encode(payload, true)
-  return `https://t.me/queueeebot?startapp=${base64Encoded}`
+export function encode_payload(action, token) {
+  return btoa(`${action}:${token}`)
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+export function decode_payload(encodedStr) {
+  const str = encodedStr.replace(/-/g, '+').replace(/_/g, '/');
+  const decoded = atob(str + '=='.slice(0, str.length % 3));
+  const [action, token] = decoded.split(':');
+  return { action, token };
+}
+
+export const generateTokenLink = (token) => {
+  const encoded = encode_payload('share', token)
+  return `https://t.me/queueeebot?startapp=${encoded}`
 }

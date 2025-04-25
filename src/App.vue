@@ -5,7 +5,7 @@
 <script>
 import { onMounted } from 'vue'
 import { useQueueStore } from './stores/queueStore'
-import {Base64UrlSafe} from "@aecworks/base64-url-safe";
+import {decode_payload} from './utils/helpers.js'
 import {useRouter} from "vue-router";
 
 export default {
@@ -20,11 +20,7 @@ export default {
       console.log(window.Telegram?.WebApp?.initDataUnsafe?.start_param)
       if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
         try {
-          // 1. Декодируем Base64UrlSafe → JSON
-          console.log(Telegram.WebApp.initDataUnsafe.start_param)
-          const decodedPayload = Base64UrlSafe.decode(Telegram.WebApp.initDataUnsafe.start_param);
-          console.log(decodedPayload)
-          const { action, token } = JSON.parse(decodedPayload);
+          const { action, token } = decode_payload(Telegram.WebApp.initDataUnsafe.start_param);
           console.log(action, token)
           // 2. Если действие "share" — редирект с токеном
           if (action === 'share' && token) {

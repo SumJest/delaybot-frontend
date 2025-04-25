@@ -11,7 +11,7 @@
       </div>
 
       <div v-if="createdLink" class="share-link">
-        <div class="qr-wrapper">
+        <div class="qr-wrapper" v-if="createdLink">
           <div ref="qrCodeRef"></div>
         </div>
 
@@ -38,9 +38,9 @@
 </template>
 
 <script setup>
-import {ref, computed, watch, onMounted} from 'vue'
+import {ref, computed, watch, onMounted, nextTick} from 'vue'
 import { useQueueStore } from '@/stores/queueStore'
-import { generateLink } from '@/utils/helpers.js'
+import { generateTokenLink } from '@/utils/helpers.js'
 import telegramLogo from '@/assets/telegram-logo.svg'
 import QRCodeStyling from "qr-code-styling";
 
@@ -59,19 +59,21 @@ const emit = defineEmits(['close', 'created', 'updated'])
 
 const store = useQueueStore()
 const canManage = ref(props.share?.can_manage || false)
-const createdLink = ref(props.share ? generateLink(props.share.token) : '')
+const createdLink = ref(props.share ? generateTokenLink(props.share.token) : '')
 const loading = ref(false)
+const qrCode = ref(null)
 const qrCodeRef = ref(null)
-onMounted(() => {
-  const qrCode = new QRCodeStyling({
+
+const initializeQRCode = () => {
+  qrCode.value = new QRCodeStyling({
     width: 240,
     height: 240,
     type: 'svg',
     data: createdLink.value,
     image: telegramLogo,
     dotsOptions: {
-      color: '#0088cc',
-      type: 'rounded'
+      color: '#000b10',
+      type: 'extra-rounded'
     },
     backgroundOptions: {
       color: '#f9f9f9'
@@ -91,19 +93,36 @@ onMounted(() => {
     }
   })
 
-  qrCode.append(qrCodeRef.value)
+  if (qrCodeRef.value) {
+    qrCodeRef.value.innerHTML = ''
+    qrCode.value.append(qrCodeRef.value)
+  }
+}
+
+watch(createdLink, (newVal) => {
+  if (newVal) {
+    nextTick(() => {
+      if (qrCode.value) {
+        qrCode.value.update({ data: newVal })
+      } else {
+        initializeQRCode()
+      }
+    })
+  }
+})
+
+onMounted(() => {
+  if (createdLink.value) {
+    initializeQRCode()
+  }
 })
 
 const viewing = computed(() => !!props.share)
 const isLinkNew = computed(() => !props.share?.id)
 
 const handleSubmit = async () => {
-    await createShare()
+  await createShare()
 }
-watch(() => createdLink, (newVal) => {
-  localMembers.value = [...newVal]
-}, { deep: true })
-
 
 const createShare = async () => {
   loading.value = true
@@ -112,13 +131,12 @@ const createShare = async () => {
       queue_id: props.queueId,
       can_manage: canManage.value
     })
-    createdLink.value = generateLink(share.token)
+    createdLink.value = generateTokenLink(share.token)
     emit('created', share)
   } finally {
     loading.value = false
   }
 }
-
 
 const copyLink = () => {
   navigator.clipboard.writeText(createdLink.value)
@@ -128,7 +146,6 @@ const copyLink = () => {
 const close = () => {
   emit('close')
 }
-
 </script>
 
 <style scoped>
