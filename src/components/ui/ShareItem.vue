@@ -34,7 +34,7 @@ export default {
 
 <style scoped>
 .share-item {
-  background: rgba(0,0,0,0.05);
+  background-color: var(--tg-theme-section-bg-color);
   padding: 1rem;
   border-radius: var(--tg-border-radius);
   margin-bottom: 1rem;

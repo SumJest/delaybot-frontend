@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <div class="main-container">
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -15,8 +17,8 @@ export default {
     onMounted(() => {
       Telegram.WebApp.expand()
       Telegram.WebApp.disableClosingConfirmation()
-      Telegram.WebApp.setHeaderColor('#2481cc')
-      Telegram.WebApp.setBackgroundColor('#f5f5f5')
+      Telegram.WebApp.disableVerticalSwipes()
+      Telegram.WebApp.requestFullscreen()
       console.log(window.Telegram?.WebApp?.initDataUnsafe?.start_param)
       if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
         try {
@@ -48,8 +50,9 @@ export default {
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--tg-theme-bg-color, #f5f5f5);
+  background: var(--tg-theme-secondary-bg-color, #f5f5f5);
   color: var(--tg-theme-text-color, #000000);
+  padding: 0 var(--tg-safe-area-inset-right) var(--tg-safe-area-inset-bottom) var(--tg-safe-area-inset-left);
 }
 
 #app {

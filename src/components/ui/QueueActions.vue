@@ -52,15 +52,17 @@ const confirmDelete = () => {
 
 <style scoped>
 .queue-actions {
-  position: relative;
+  display: flex;
 }
-
 .tg-icon-button {
   background: none;
   border: none;
   padding: 8px;
   color: var(--tg-theme-text-color, #000000);
   cursor: pointer;
+}
+.tg-icon-button {
+  fill: #f9f9f9;
 }
 
 .actions-menu {

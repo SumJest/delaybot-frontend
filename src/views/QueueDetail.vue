@@ -1,5 +1,5 @@
 <template>
-  <div class="queue-detail tg-theme-bg">
+  <div>
     <AppHeader :title="queue.name" back-button>
       <QueueActions
         :queue="queue"
@@ -7,42 +7,47 @@
         @share="showShareModal = true"
       />
     </AppHeader>
-    <div class="queue-content">
-      <div class="queue-meta">
-        <StatusBadge
-            :closed="queue.closed"
-            @toggle="toggleQueueStatus"
-            v-shimmer="store.queueDetailsLoading"
+    <div class="queue-detail">
+      <div class="queue-content">
+        <p class="section-header">Мета</p>
+        <div class="queue-meta section">
+          <StatusBadge
+              :closed="queue.closed"
+              @toggle="toggleQueueStatus"
+              v-shimmer="store.queueDetailsLoading"
+          />
+          <p v-shimmer="store.queueDetailsLoading">Создана: {{ formatDate(queue.created_at) }}</p>
+          <p v-shimmer="store.queueDetailsLoading">Кол-во участников: {{ queue.members.length }}</p>
+        </div>
+        <p class="section-header">Участники</p>
+        <MembersEditor
+          :members="queue.members"
+          @update="updateMembers"
+          class="section"
         />
-        <p v-shimmer="store.queueDetailsLoading">Создана: {{ formatDate(queue.created_at) }}</p>
-        <p v-shimmer="store.queueDetailsLoading">Кол-во участников: {{ queue.members.length }}</p>
-      </div>
-      <MembersEditor
-        :members="queue.members"
-        @update="updateMembers"
-      />
-      <MemberItemShimmer v-for="i in [0, 1]" v-if="store.queueDetailsLoading"/>
+        <MemberItemShimmer v-for="i in [0, 1]" v-if="store.queueDetailsLoading"/>
 
-      <div class="shares-section" v-if="shares.items?.length || store.queueDetailsLoading">
-        <h3>Доступы</h3>
-        <ShareItem
-            v-for="share in shares.items"
-            :key="share.id"
-            :share="share"
-            :format-date="formatDate"
-            @view-share="openViewShareModal"
-            @delete-share="deleteShare"
-            v-if="!store.queueDetailsLoading" />
-        <ShareItemShimmer v-else />
-      </div>
+        <p class="section-header">Доступы</p>
+        <div class="shares-section section" v-if="shares.items?.length || store.queueDetailsLoading">
+          <ShareItem
+              v-for="share in shares.items"
+              :key="share.id"
+              :share="share"
+              :format-date="formatDate"
+              @view-share="openViewShareModal"
+              @delete-share="deleteShare"
+              v-if="!store.queueDetailsLoading" />
+          <ShareItemShimmer v-else />
+        </div>
 
-      <ShareLinkModal
-          v-if="showShareModal"
-          :queue-id="queue.id"
-          :share="selectedShare"
-          @close="closeShareModal"
-          @created="handleShareCreated"
-      />
+        <ShareLinkModal
+            v-if="showShareModal"
+            :queue-id="queue.id"
+            :share="selectedShare"
+            @close="closeShareModal"
+            @created="handleShareCreated"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -125,9 +130,13 @@ const handleShareCreated = async () => {
 </script>
 
 <style scoped>
+.section-header{
+  color: var(--tg-theme-subtitle-text-color);
+  font-weight: lighter;
+}
 .queue-detail {
-  padding: 1rem;
   min-height: 100vh;
+  padding: 0 16px 0 16px;
 }
 
 .queue-content {
@@ -140,5 +149,18 @@ const handleShareCreated = async () => {
 
 .shares-section {
   margin-top: 2rem;
+}
+.section {
+  background-color: var(--tg-theme-section-bg-color);
+  padding: 1rem;
+  border-radius: var(--tg-border-radius);
+}
+.status-badge {
+  transition: transform 0.1s ease, background-color 0.2s ease;
+  will-change: transform;
+}
+.status-badge:active {
+  transform: scale(0.95);
+  background-color: var(--tg-theme-hover-color);
 }
 </style>

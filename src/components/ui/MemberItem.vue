@@ -1,7 +1,7 @@
 
 <template>
   <div class="member-item">
-    <span class="member-info">
+    <span class="member-info drag-handle">
             {{ element.first_name || '' }} {{ element.last_name || '' }}
             <small>@{{ element.username || '' }}</small>
           </span>

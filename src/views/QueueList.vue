@@ -20,7 +20,6 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import QueueCard from '@/components/ui/QueueCard.vue'
 import PaginationControls from '@/components/ui/PaginationControls.vue'
-import {listQueues} from "@/api/client.js";
 import AppHeader from "@/components/AppHeader.vue";
 import {useQueueStore} from "@/stores/queueStore.js";
 import {storeToRefs} from "pinia";
@@ -31,11 +30,6 @@ import QueueCardShimmer from "@/components/ui/shimmers/QueueCardShimmer.vue";
 export default {
   components: {QueueCardShimmer, StatusBadge, Shimmer, AppHeader, QueueCard, PaginationControls },
   setup() {
-    // const queues = ref([])
-    // const total = ref(0)
-    // const offset = ref(0)
-    // const limit = ref(10)
-
     const store = useQueueStore()
     const {queues} = storeToRefs(store)
 
@@ -47,3 +41,14 @@ export default {
   }
 }
 </script>
+
+<style>
+.queue-card {
+  transition: transform 0.1s ease, background-color 0.2s ease;
+  will-change: transform;
+}
+.queue-card:active {
+  transform: scale(0.95);
+  background-color: var(--tg-theme-hover-color);
+}
+</style>

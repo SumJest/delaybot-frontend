@@ -101,7 +101,7 @@ const goToQueue = () => {
 }
 
 .error-message svg {
-  fill: #e53935;
+  fill: var(--tg-theme-destructive-text-color)
 }
 
 .success-message svg {
