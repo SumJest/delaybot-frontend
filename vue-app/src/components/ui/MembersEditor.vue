@@ -7,7 +7,10 @@
 
     <!-- Встраиваемая форма добавления -->
     <div v-if="adding" class="add-form">
-      <p class="section-hint">Выберите способ добавления:</p>
+      <div class="add-form-header">
+        <p class="section-hint">Выберите способ добавления:</p>
+        <button class="close-btn" @click="resetForm">✕</button>
+      </div>
       <div class="mode-switch">
         <button
           :class="['mode-btn', { active: mode === 'username' }]"
@@ -70,8 +73,6 @@
           </div>
         </template>
       </div>
-
-      <button class="close-btn" @click="resetForm">✕</button>
     </div>
 
     <!-- Список текущих участников -->
@@ -90,7 +91,7 @@
         />
       </template>
     </draggable>
-    <MemberItemShimmer v-for="i in [0, 1]" v-if="store.queueDetailsLoading"/>
+    <MemberItemShimmer v-if="store.queueDetailsLoading"/>
     <!-- Плейсхолдер при пустом списке -->
     <p v-if="!localMembers.length && !store.queueDetailsLoading" class="empty-list">
       Список участников пуст.
@@ -197,7 +198,7 @@ const resetForm = () => {
 .add-btn-inline {
   background: none;
   border: none;
-  color: var(--tg-theme-button-color);
+  color: var(--tg-theme-accent-text-color);
   font-size: 14px;
   cursor: pointer;
   margin: 8px 0;
@@ -205,20 +206,21 @@ const resetForm = () => {
 
 .add-form {
   position: relative;
-  padding: 12px;
+  padding: 0 12px 12px 12px;
   background: var(--tg-theme-section-bg-color);
   border-radius: var(--tg-border-radius);
   margin-bottom: 16px;
 }
-
+.add-form-header {
+  display: flex;
+  justify-content: space-between;
+}
 .close-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
+  color: var(--tg-theme-accent-text-color)
 }
 
 .section-hint {
@@ -236,7 +238,7 @@ const resetForm = () => {
 .mode-btn {
   flex: 1;
   padding: 8px;
-  border: 1px solid var(--tg-theme-hint-color);
+  border: 0 solid var(--tg-theme-hint-color);
   background: var(--tg-theme-secondary-bg-color);
   color: var(--tg-theme-secondary-text-color);
   border-radius: var(--tg-border-radius);

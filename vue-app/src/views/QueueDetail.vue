@@ -16,8 +16,20 @@
               @toggle="toggleQueueStatus"
               v-shimmer="store.queueDetailsLoading"
           />
-          <p v-shimmer="store.queueDetailsLoading">Создана: {{ formatDate(queue.created_at) }}</p>
-          <p v-shimmer="store.queueDetailsLoading">Кол-во участников: {{ queue.members.length }}</p>
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z" fill="var(--tg-theme-hint-color)"/>
+            </svg>
+            <span>Создана:</span>
+            <strong v-shimmer="store.queueDetailsLoading">{{ store.queueDetailsLoading ? "27 апр. 2025г., 02:20" : formatDate(queue.created_at) }}</strong>
+          </div>
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="var(--tg-theme-hint-color)"/>
+            </svg>
+            <span>Участников:</span>
+            <strong v-shimmer="store.queueDetailsLoading">{{ store.queueDetailsLoading ? 123 : queue.members.length }}</strong>
+          </div>
         </div>
         <p class="section-header">Участники</p>
         <MembersEditor
@@ -26,18 +38,18 @@
           class="section"
         />
 
-        <p class="section-header">Доступы</p>
-        <div class="shares-section section" v-if="shares.items?.length || store.queueDetailsLoading">
-          <ShareItem
-              v-for="share in shares.items"
-              :key="share.id"
-              :share="share"
-              :format-date="formatDate"
-              @view-share="openViewShareModal"
-              @delete-share="deleteShare"
-              v-if="!store.queueDetailsLoading" />
-          <ShareItemShimmer v-else />
-        </div>
+        <p class="section-header" v-if="shares.items?.length || store.queueDetailsLoading">Доступы</p>
+        <ShareItem
+            v-for="share in shares.items"
+            :key="share.id"
+            :share="share"
+            :format-date="formatDate"
+            @view-share="openViewShareModal"
+            @delete-share="deleteShare"
+            v-if="!store.queueDetailsLoading"
+            class="section"
+        />
+        <ShareItemShimmer v-if="store.queueDetailsLoading" class="section"/>
 
         <ShareLinkModal
             v-if="showShareModal"
@@ -161,5 +173,22 @@ const handleShareCreated = async () => {
 .status-badge:active {
   transform: scale(0.95);
   background-color: var(--tg-theme-hover-color);
+}
+.meta-item {
+  display: flex;
+  margin-top: 10px;
+  gap: 4px;
+  color: var(--tg-theme-hint-color, #000);
+  font-size: 14px;
+}
+
+.meta-item strong {
+  margin-left: 2px;
+  color: var(--tg-theme-accent-text-color, #3498db);
+}
+
+.meta-item .icon {
+  width: 18px;
+  height: 18px;
 }
 </style>

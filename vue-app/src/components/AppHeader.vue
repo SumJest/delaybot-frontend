@@ -46,7 +46,9 @@ const handleBack = () => {
   padding-top: var(--tg-safe-area-inset-top);
     position: sticky;
   top: 0;
-  background: var(--tg-theme-header-bg-color, #ffffff);
+    z-index: 100; /* <--- Добавить */
+  background: var(--tg-theme-header-bg-color, #ffffffcc); /* полупрозрачный фон */
+  backdrop-filter: blur(10px);
 }
 .app-header-container{
   display: flex;

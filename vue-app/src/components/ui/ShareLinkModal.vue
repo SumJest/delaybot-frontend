@@ -1,13 +1,21 @@
 <template>
   <div class="modal-overlay" @click.self="close">
     <div class="modal-content tg-theme-bg">
-      <h3>{{ viewing ? 'Просмотр доступа' : 'Поделиться очередью' }}</h3>
+      <header class="modal-header">
+        <h3>{{ viewing ? 'Просмотр доступа' : 'Поделиться очередью' }}</h3>
+        <button class="close-btn" @click="close" aria-label="Закрыть модальное окно">
+          ✕
+        </button>
+      </header>
 
       <div class="form-group">
-        <label>
-          <input type="checkbox" v-model="canManage" :disabled="viewing && !isLinkNew">
-          Разрешить управление
-        </label>
+          <div class="form-switch">
+              <label class="switch">
+              <input type="checkbox" v-model="canManage" :disabled="viewing && !isLinkNew">
+              <span class="slider"></span>
+            </label>
+            <span class="switch-label">Разрешить управление</span>
+          </div>
       </div>
 
       <div v-if="createdLink" class="share-link">
@@ -28,9 +36,6 @@
       <div class="modal-actions">
         <button v-if="!viewing" class="tg-button" @click="handleSubmit" :disabled="loading">
           {{ createdLink ? 'Создать еще' : 'Создать' }}
-        </button>
-        <button class="tg-button secondary" @click="close">
-          Закрыть
         </button>
       </div>
     </div>
@@ -151,10 +156,7 @@ const close = () => {
 <style scoped>
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -163,27 +165,34 @@ const close = () => {
 }
 
 .modal-content {
-  padding: 2rem;
+  background: var(--tg-theme-bg-color);
   border-radius: var(--tg-border-radius);
-  max-width: 90%;
   width: 400px;
-  /* Добавлено для центрирования содержимого */
+  max-width: 95%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
 }
-
-h3 {
-  text-align: center;
-  width: 100%;
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--tg-theme-text-color);
 }
-
-.form-group {
-  margin: 1rem 0;
-  width: 100%;
-  text-align: center;
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--tg-theme-hint-color);
 }
-
 .share-link {
   margin: 1rem 0;
   width: 100%;
@@ -192,6 +201,59 @@ h3 {
   align-items: center;
 }
 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  width: 100%;
+}
+.form-switch {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+.switch {
+  position: relative;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input { display: none; }
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+.switch .slider::before {
+  content: '';
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  top: 2px;
+  background-color: var(--tg-theme-bg-color);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.switch input:checked + .slider {
+  background-color: var(--tg-theme-link-color);
+}
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+.switch-label {
+  font-size: 14px;
+  color: var(--tg-theme-text-color);
+}
 .qr-wrapper {
   display: flex;
   width: 255px;
@@ -237,7 +299,7 @@ h3 {
 .modal-actions {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  margin: 1rem 0 1rem 0;
   justify-content: center;
   width: 100%;
 }

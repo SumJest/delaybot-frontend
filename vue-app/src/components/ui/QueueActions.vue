@@ -44,6 +44,10 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
+const close = () => {
+  isMenuOpen.value = false
+}
+
 const confirmDelete = () => {
   isMenuOpen.value = false
   showConfirm.value = true
