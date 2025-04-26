@@ -15,15 +15,10 @@ export default {
     const store = useQueueStore()
     const router = useRouter()
     onMounted(() => {
-      Telegram.WebApp.expand()
-      Telegram.WebApp.disableClosingConfirmation()
-      Telegram.WebApp.disableVerticalSwipes()
-      Telegram.WebApp.requestFullscreen()
-      console.log(window.Telegram?.WebApp?.initDataUnsafe?.start_param)
       if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
         try {
           const { action, token } = decode_payload(Telegram.WebApp.initDataUnsafe.start_param);
-          console.log(action, token)
+          router.push('/error?reason=invalid_token');
           // 2. Если действие "share" — редирект с токеном
           if (action === 'share' && token) {
             router.push({

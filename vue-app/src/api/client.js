@@ -1,12 +1,43 @@
 // src/api/client.js
 
 import axios from 'axios';
+import router from "@/router/index.js";
 
 // Create an axios instance with base URL from env
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://queuebot.romaaaka.ru/api/',
 });
+http.interceptors.response.use(
+  response => response,
+  error => {
+    if (!error.response) {
+      // Нет ответа от сервера (например, сетевые ошибки)
+      return Promise.reject(error);
+    }
 
+    const { status } = error.response;
+    if (status === 401) {
+      // Неавторизованный доступ
+      router.push({
+        name: "ErrorPage",
+        query: { reason: "unauthorized" }
+      });
+    } else if (status === 404) {
+      // Ресурс не найден
+      router.push({
+        name: "ErrorPage",
+        query: { reason: "not_found" }
+      });
+    } else {
+      router.push({
+        name: "ErrorPage",
+        query: { reason: status }
+      })
+    }
+
+    return Promise.reject(error);
+  }
+);
 // Automatically attach Telegram initData header for auth on every request
 // Header name defined in OpenAPI spec: "X-Telegram-InitData" citeturn0file0
 http.interceptors.request.use(config => {
@@ -16,7 +47,33 @@ http.interceptors.request.use(config => {
   }
   return config;
 });
+http.interceptors.response.use(
+  response => response,
+  error => {
+    if (!error.response) {
+      // Нет ответа от сервера (например, сетевые ошибки)
+      return Promise.reject(error);
+    }
 
+    const { status } = error.response;
+
+    if (status === 401) {
+      // Неавторизованный доступ
+      router.push({
+        name: "ErrorPage",
+        query: { reason: "unauthorized" }
+      });
+    } else if (status === 404) {
+      // Ресурс не найден
+      router.push({
+        name: "ErrorPage",
+        query: { reason: "not_found" }
+      });
+    }
+
+    return Promise.reject(error);
+  }
+);
 /**
  * List queues
  * @param {object} params

@@ -25,7 +25,6 @@
           @update="updateMembers"
           class="section"
         />
-        <MemberItemShimmer v-for="i in [0, 1]" v-if="store.queueDetailsLoading"/>
 
         <p class="section-header">Доступы</p>
         <div class="shares-section section" v-if="shares.items?.length || store.queueDetailsLoading">

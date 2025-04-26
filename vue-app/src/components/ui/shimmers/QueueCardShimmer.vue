@@ -5,7 +5,6 @@
       <StatusBadge :closed="true" v-shimmer="true"/>
     </div>
     <p v-shimmer="true">Участников: </p>
-    <button class="tg-button" v-shimmer="true">Управление</button>
   </div>
 </template>
 

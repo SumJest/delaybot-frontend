@@ -80,6 +80,7 @@
       handle=".drag-handle"
       item-key="id"
       class="members-list"
+      v-if="!store.queueDetailsLoading"
       @end="emitUpdate"
     >
       <template #item="{ element }">
@@ -89,9 +90,9 @@
         />
       </template>
     </draggable>
-
+    <MemberItemShimmer v-for="i in [0, 1]" v-if="store.queueDetailsLoading"/>
     <!-- Плейсхолдер при пустом списке -->
-    <p v-if="!localMembers.length" class="empty-list">
+    <p v-if="!localMembers.length && !store.queueDetailsLoading" class="empty-list">
       Список участников пуст.
       <button class="add-btn-inline" @click="adding = true">
         Добавьте первого участника
@@ -106,6 +107,7 @@ import draggable from 'vuedraggable'
 import { useQueueStore } from '@/stores/queueStore.js'
 import { debounce } from '@/utils/helpers.js'
 import MemberItem from '@/components/ui/MemberItem.vue'
+import MemberItemShimmer from "@/components/ui/shimmers/MemberItemShimmer.vue";
 
 const props = defineProps({
   members: { type: Array, required: true, default: () => [] }
