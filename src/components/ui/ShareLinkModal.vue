@@ -85,11 +85,11 @@ const initializeQRCode = () => {
     },
     cornersSquareOptions: {
       type: 'extra-rounded',
-      color: '#0088cc'
+      color: '#000b10'
     },
     cornersDotOptions: {
       type: 'dot',
-      color: '#0088cc'
+      color: '#000b10'
     }
   })
 
