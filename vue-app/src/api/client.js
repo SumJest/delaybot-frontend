@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Create an axios instance with base URL from env
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://queuebot.romaaaka.ru/',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://queuebot.romaaaka.ru/api/',
 });
 
 // Automatically attach Telegram initData header for auth on every request
