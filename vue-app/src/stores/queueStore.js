@@ -12,6 +12,15 @@ import {
   getUser
 } from '@/api/client'
 
+// Вспомогательная функция для задержки
+const withMinDelay = async (promise, minDelay = 300) => {
+  const [result] = await Promise.all([
+    promise,
+    new Promise(resolve => setTimeout(resolve, minDelay))
+  ]);
+  return result;
+}
+
 export const useQueueStore = defineStore('queue', {
   state: () => ({
     queues: {
@@ -27,7 +36,6 @@ export const useQueueStore = defineStore('queue', {
       offset: 0,
       total: 0
     },
-    // для работы с поиском пользователей
     userSuggestions: [],
     userLoading: false,
     userError: null,
@@ -43,24 +51,28 @@ export const useQueueStore = defineStore('queue', {
     async fetchQueues(params = {}) {
       this.listQueuesLoading = true
       try {
-        const response = await listQueues({
+        const requestParams = {
           offset: params.offset || 0,
-          limit: params.limit || 10
-        })
-        console.log(response)
-        this.queues = response
+          limit: params.limit || 10,
+        };
+
+        if (params.manage) {
+          requestParams.manage = true;
+        }
+
+        const response = await withMinDelay(listQueues(requestParams));
+        this.queues = response;
       } catch (error) {
-        this.error = error
-        throw error
+        this.error = error;
+        throw error;
       } finally {
-        this.listQueuesLoading = false
+        this.listQueuesLoading = false;
       }
     },
-
     async deleteQueue(id) {
       this.deleteQueueLoading = true
       try {
-        await deleteQueue(id)
+        await withMinDelay(deleteQueue(id));
         if (this.queues?.items) {
           this.queues.items = this.queues.items.filter(q => q.id !== id)
           this.queues.total -= 1
@@ -80,7 +92,7 @@ export const useQueueStore = defineStore('queue', {
     async fetchQueueDetails(id) {
       this.queueDetailsLoading = true
       try {
-        this.currentQueue = await getQueue(id)
+        this.currentQueue = await withMinDelay(getQueue(id));
       } catch (error) {
         this.error = error
       } finally {
@@ -92,7 +104,7 @@ export const useQueueStore = defineStore('queue', {
       if (!this.currentQueue) return
       this.loading = true
       try {
-        this.currentQueue = await updateQueue(this.currentQueue.id, data)
+        this.currentQueue = await withMinDelay(updateQueue(this.currentQueue.id, data));
       } catch (error) {
         this.error = error
       } finally {
@@ -103,7 +115,7 @@ export const useQueueStore = defineStore('queue', {
     async fetchShares(queueId) {
       this.sharesLoading = true
       try {
-        this.shares = await listShareQueues({ queue_id: queueId })
+        this.shares = await withMinDelay(listShareQueues({ queue_id: queueId }));
       } catch (error) {
         this.error = error
       } finally {
@@ -114,7 +126,7 @@ export const useQueueStore = defineStore('queue', {
     async createShare(payload) {
       this.loading = true
       try {
-        const share = await createShareQueue(payload)
+        const share = await withMinDelay(createShareQueue(payload));
         this.shares.items.unshift(share)
         return share
       } catch (error) {
@@ -124,23 +136,15 @@ export const useQueueStore = defineStore('queue', {
       }
     },
 
-    // === НОВЫЕ МЕТОДЫ ===
-
-    /**
-     * Поиск пользователей по username
-     * @param {string} username
-     * @param {object} options.limit, options.offset
-     */
     async searchUsers(username, options = { offset: 0, limit: 10 }) {
       this.userLoading = true
       this.userError = null
       try {
-        const response = await listUsers({
+        const response = await withMinDelay(listUsers({
           username: username,
           offset: options.offset,
           limit: options.limit
-        })
-        // response.items — массив UserSchema
+        }));
         this.userSuggestions = response.items
         return response.items
       } catch (error) {
@@ -152,11 +156,6 @@ export const useQueueStore = defineStore('queue', {
       }
     },
 
-    /**
-     * Загрузка одного пользователя по ID
-     * @param {number} id
-     * @returns {object} UserSchema
-     */
     async fetchUser(id) {
       try {
         return await getUser(id)

@@ -81,9 +81,14 @@ http.interceptors.response.use(
  * @param {number} params.limit
  * @returns {Promise<object>} OffsetPagination of QueueSchema
  */
-export function listQueues({ offset = 0, limit = 10 } = {}) {
-  return http.get('/queue/', { params: { offset, limit } }).then(res => res.data);
+export function listQueues({ offset = 0, limit = 10, manage } = {}) {
+  const params = { offset, limit };
+  if (manage) {
+    params.manage = true;
+  }
+  return http.get('/queue/', { params }).then(res => res.data);
 }
+
 
 /**
  * Retrieve a queue by ID
