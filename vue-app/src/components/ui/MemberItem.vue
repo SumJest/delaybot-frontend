@@ -7,6 +7,7 @@
           </span>
     <button
         @click="handleDeleteMember(element.id)"
+        v-if="canManage"
         class="tg-button danger small"
     >
       ×
@@ -20,6 +21,10 @@ defineProps({
   element: {
     type: Object,
     required: true
+  },
+  canManage : {
+    type: Boolean,
+    default: false
   }
 })
 const emit = defineEmits(['delete'])

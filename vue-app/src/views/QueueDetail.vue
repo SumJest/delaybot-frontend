@@ -3,6 +3,7 @@
     <AppHeader :title="queue.name" back-button>
       <QueueActions
         :queue="queue"
+        :can-manage="queue.can_manage"
         @delete="handleDelete"
         @share="showShareModal = true"
       />
@@ -13,6 +14,7 @@
         <div class="queue-meta section">
           <StatusBadge
               :closed="queue.closed"
+              :disabled="!queue.can_manage"
               @toggle="toggleQueueStatus"
               v-shimmer="store.queueDetailsLoading"
           />
@@ -30,11 +32,21 @@
             <span>Участников:</span>
             <strong v-shimmer="store.queueDetailsLoading">{{ store.queueDetailsLoading ? 123 : queue.members.length }}</strong>
           </div>
+          <div class="meta-item">
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="var(--tg-theme-hint-color)"/>
+            </svg>
+            <span>Роль:</span>
+            <strong v-shimmer="store.queueDetailsLoading">
+              {{ store.queueDetailsLoading ? 'Просмотр' : (queue.can_manage ? 'Управление' : 'Просмотр') }}
+            </strong>
+          </div>
         </div>
         <p class="section-header">Участники</p>
         <MembersEditor
           :members="queue.members"
-          @update="updateMembers"
+          :can-manage="queue.can_manage"
+          @update="queue.can_manage && updateMembers"
           class="section"
         />
 

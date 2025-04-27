@@ -1,7 +1,7 @@
 <template>
   <div class="members-editor">
     <!-- Кнопка для открытия формы добавления -->
-    <button v-if="!adding" class="add-btn" @click="adding = true">
+    <button v-if="canManage && !adding" class="add-btn" @click="adding = true">
       + Добавить участника
     </button>
 
@@ -82,11 +82,13 @@
       item-key="id"
       class="members-list"
       v-if="!store.queueDetailsLoading"
+            :disabled="!canManage"
       @end="emitUpdate"
     >
       <template #item="{ element }">
         <MemberItem
           :element="element"
+          :can-manage="canManage"
           @delete="removeMember"
         />
       </template>
@@ -111,7 +113,8 @@ import MemberItem from '@/components/ui/MemberItem.vue'
 import MemberItemShimmer from "@/components/ui/shimmers/MemberItemShimmer.vue";
 
 const props = defineProps({
-  members: { type: Array, required: true, default: () => [] }
+  members: { type: Array, required: true, default: () => [] },
+  canManage: { type: Boolean, default: false }
 })
 const emit = defineEmits(['update'])
 const store = useQueueStore()

@@ -18,13 +18,17 @@ export default {
       if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
         try {
           const { action, token } = decode_payload(Telegram.WebApp.initDataUnsafe.start_param);
-          router.push('/error?reason=invalid_token');
           // 2. Если действие "share" — редирект с токеном
           if (action === 'share' && token) {
             router.push({
               path: '/activate',
               query: { token } // -> /activate?token=4oUf8igo
             });
+          } else if (action === 'queue' && token) {
+            router.push({
+              name: 'QueueDetail',
+              params: {id: token}
+            })
           }
         } catch (e) {
           console.error('Ошибка декодирования deeplink:', e);

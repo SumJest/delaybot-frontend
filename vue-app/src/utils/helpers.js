@@ -34,8 +34,11 @@ export function encode_payload(action, token) {
 }
 
 export function decode_payload(encodedStr) {
-  const str = encodedStr.replace(/-/g, '+').replace(/_/g, '/');
-  const decoded = atob(str + '=='.slice(0, str.length % 3));
+  let str = encodedStr.replace(/-/g, '+').replace(/_/g, '/');
+  while (str.length % 4 !== 0) {
+    str += '=';
+  }
+  const decoded = atob(str);
   const [action, token] = decoded.split(':');
   return { action, token };
 }
