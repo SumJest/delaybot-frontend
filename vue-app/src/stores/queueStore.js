@@ -13,7 +13,7 @@ import {
 } from '@/api/client'
 
 // Вспомогательная функция для задержки
-const withMinDelay = async (promise, minDelay = 1000) => {
+const withMinDelay = async (promise, minDelay = 300) => {
   const [result] = await Promise.all([
     promise,
     new Promise(resolve => setTimeout(resolve, minDelay))
