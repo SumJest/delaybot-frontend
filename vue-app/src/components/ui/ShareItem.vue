@@ -22,13 +22,16 @@
       <strong>{{ share.can_manage ? 'Управление' : 'Просмотр' }}</strong>
     </div>
 
-    <button class="delete-button" @click.stop="handleDelete(share)">
+    <WaveButton :is-loading="deleteLoading" class="delete-button" @click.stop="handleDelete(share)">
       Удалить
-    </button>
+    </WaveButton>
   </div>
 </template>
 
 <script setup>
+import {ref} from "vue";
+import WaveButton from "./WaveButton.vue";
+
 defineProps({
   share: {
     type: Object,
@@ -39,7 +42,7 @@ defineProps({
     required: true
   }
 })
-
+const deleteLoading = ref(false)
 const emit = defineEmits(['view-share', 'delete-share'])
 
 function handleItemClick(share) {
@@ -47,7 +50,8 @@ function handleItemClick(share) {
 }
 
 function handleDelete(share) {
-  emit('delete-share', share.id)
+    deleteLoading.value = true
+    emit('delete-share', share.id)
 }
 
 const copyText = async (event) => {

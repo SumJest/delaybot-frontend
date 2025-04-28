@@ -63,13 +63,14 @@
               placeholder="Введите ID"
               class="search-input"
             />
-            <button
+            <WaveButton
               @click="addById"
               :disabled="!canAddById || store.userLoading"
+              :is-loading="fetchUserLoading"
               class="add-id-button"
             >
               Добавить
-            </button>
+            </WaveButton>
           </div>
         </template>
       </div>
@@ -111,6 +112,7 @@ import { useQueueStore } from '@/stores/queueStore.js'
 import { debounce } from '@/utils/helpers.js'
 import MemberItem from '@/components/ui/MemberItem.vue'
 import MemberItemShimmer from "@/components/ui/shimmers/MemberItemShimmer.vue";
+import WaveButton from "./WaveButton.vue";
 
 const props = defineProps({
   members: { type: Array, required: true, default: () => [] },
@@ -125,6 +127,7 @@ const mode = ref('username')
 const searchQuery = ref('')
 const idQuery = ref('')
 const suggestions = ref([])
+const fetchUserLoading = ref(false)
 
 watch(
   () => props.members,
@@ -135,7 +138,7 @@ watch(
 const emitUpdate = () => emit('update', localMembers.value)
 
 const debouncedSearch = debounce(async (q) => {
-  if (q.length >= 3) {
+  if (q.length >= 4) {
     try {
       await store.searchUsers(q)
       suggestions.value = store.userSuggestions
@@ -168,9 +171,8 @@ const selectUser = (user) => {
 }
 
 const removeMember = (id) => {
-  console.log(id)
   localMembers.value = localMembers.value.filter(m => m.id !== id)
-  emit('update', localMembers.value)
+  emitUpdate()
 }
 
 const canAddById = computed(() =>
@@ -180,9 +182,13 @@ const canAddById = computed(() =>
 const addById = async () => {
   const id = Number(idQuery.value.trim())
   try {
+    fetchUserLoading.value = true
     const user = await store.fetchUser(id)
     if (user) selectUser(user)
   } catch {}
+  finally {
+    fetchUserLoading.value = false
+  }
   resetForm()
 }
 

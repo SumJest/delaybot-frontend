@@ -34,9 +34,9 @@
       </div>
 
       <div class="modal-actions">
-        <button v-if="!viewing" class="tg-button" @click="handleSubmit" :disabled="loading">
+        <WaveButton v-if="!viewing" class="tg-button" @click="handleSubmit" :disabled="loading" :is-loading="loading">
           {{ createdLink ? 'Создать еще' : 'Создать' }}
-        </button>
+        </WaveButton>
       </div>
     </div>
   </div>
@@ -48,6 +48,7 @@ import { useQueueStore } from '@/stores/queueStore'
 import { generateTokenLink } from '@/utils/helpers.js'
 import telegramLogo from '@/assets/telegram-logo.svg'
 import QRCodeStyling from "qr-code-styling";
+import WaveButton from "./WaveButton.vue";
 
 const props = defineProps({
   queueId: {

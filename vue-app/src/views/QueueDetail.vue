@@ -46,11 +46,11 @@
         <MembersEditor
           :members="queue.members"
           :can-manage="queue.can_manage"
-          @update="queue.can_manage && updateMembers"
+          @update="updateMembers"
           class="section"
         />
 
-        <p class="section-header" v-if="shares.items?.length || store.queueDetailsLoading">Доступы</p>
+        <p class="section-header" v-if="shares.items?.length || store.sharesLoading || store.queueDetailsLoading">Доступы</p>
         <ShareItem
             v-for="share in shares.items"
             :key="share.id"
@@ -58,10 +58,10 @@
             :format-date="formatDate"
             @view-share="openViewShareModal"
             @delete-share="deleteShare"
-            v-if="!store.queueDetailsLoading"
+            v-if="!store.sharesLoading || !store.queueDetailsLoading"
             class="section"
         />
-        <ShareItemShimmer v-if="store.queueDetailsLoading" class="section"/>
+        <ShareItemShimmer v-if="store.queueDetailsLoading || (store.sharesLoading && shares.items?.length === 0)" class="section"/>
 
         <ShareLinkModal
             v-if="showShareModal"
@@ -86,8 +86,6 @@ import MembersEditor from '@/components/ui/MembersEditor.vue'
 import ShareLinkModal from '@/components/ui/ShareLinkModal.vue'
 import QueueActions from '@/components/ui/QueueActions.vue'
 import {deleteShareQueue} from "@/api/client.js";
-import Shimmer from "@/components/ui/shimmers/Shimmer.vue";
-import MemberItemShimmer from "@/components/ui/shimmers/MemberItemShimmer.vue";
 import ShareItem from "@/components/ui/ShareItem.vue";
 import ShareItemShimmer from "@/components/ui/shimmers/ShareItemShimmer.vue";
 
@@ -117,9 +115,10 @@ onMounted(async () => {
   shares.value = store.shares
 })
 
-const toggleQueueStatus = async () => {
+const toggleQueueStatus = async (callback) => {
   await store.updateCurrentQueue({ closed: !queue.value.closed })
   queue.value.closed = !queue.value.closed
+  callback()
 }
 
 const updateMembers = async (newMembers) => {
@@ -136,6 +135,7 @@ const handleDelete = async () => {
 
 const deleteShare = async (shareId) => {
   await deleteShareQueue(shareId)
+
   await store.fetchShares(route.params.id)
   shares.value = store.shares
 }

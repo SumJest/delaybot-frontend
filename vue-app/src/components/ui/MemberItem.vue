@@ -5,17 +5,21 @@
             {{ element.first_name || '' }} {{ element.last_name || '' }}
             <small>@{{ element.username || '' }}</small>
           </span>
-    <button
+    <WaveButton
         @click="handleDeleteMember(element.id)"
         v-if="canManage"
+        :is-loading="deleteLoading"
         class="tg-button danger small"
     >
       ×
-    </button>
+    </WaveButton>
   </div>
 </template>
 
 <script setup>
+
+import {ref} from "vue";
+import WaveButton from "./WaveButton.vue";
 
 defineProps({
   element: {
@@ -28,8 +32,9 @@ defineProps({
   }
 })
 const emit = defineEmits(['delete'])
-
+const deleteLoading = ref(false)
 const handleDeleteMember = (id) => {
+  deleteLoading.value = true
   emit('delete', id)
 }
 </script>

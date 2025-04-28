@@ -1,14 +1,20 @@
 <template>
-  <button
+  <WaveButton
     class="status-badge"
     :class="{ 'closed': closed }"
-    @click="$emit('toggle')"
+    @click="handleToggle"
+    :is-loading="toggleLoading"
   >
     {{ closed ? 'Закрыта' : 'Активна' }}
-  </button>
+  </WaveButton>
 </template>
 
 <script setup>
+import WaveButton from "./WaveButton.vue";
+import {ref} from "vue";
+
+const toggleLoading = ref(false);
+
 defineProps({
   closed: {
     type: Boolean,
@@ -16,7 +22,15 @@ defineProps({
   }
 })
 
-defineEmits(['toggle'])
+const emit = defineEmits(['toggle'])
+
+const handleComplete = () => {toggleLoading.value = false}
+
+const handleToggle = () => {
+  toggleLoading.value = true
+  emit("toggle", handleComplete);
+}
+
 </script>
 
 <style scoped>
