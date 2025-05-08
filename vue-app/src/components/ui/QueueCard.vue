@@ -1,5 +1,5 @@
 <template>
-  <div class="queue-card tg-theme-bg tg-theme-text" @click="navigateToDetail">
+  <div class="queue-card tg-theme-text" @click="navigateToDetail">
     <div class="header">
       <h3>{{ queue.name }}</h3>
       <StatusBadge :closed="queue.closed" />
@@ -33,6 +33,7 @@ export default {
   margin: 1rem 0 0 0;
   border-radius: var(--tg-border-radius);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--tg-theme-section-bg-color);
 }
 
 .header {

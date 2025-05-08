@@ -1,5 +1,5 @@
 <template>
-  <div class="queue-card tg-theme-bg tg-theme-text">
+  <div class="queue-card tg-theme-text">
     <div class="header">
       <h3 v-shimmer="true">Queue</h3>
       <StatusBadge :closed="true" v-shimmer="true"/>
@@ -22,6 +22,7 @@ export default {
   margin: 1rem 0;
   border-radius: var(--tg-border-radius);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--tg-theme-section-bg-color);
 }
 
 .header {
