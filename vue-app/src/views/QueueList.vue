@@ -19,7 +19,9 @@
     </div>
 
     <div class="queue-list">
-      <QueueCardShimmer v-if="store.listQueuesLoading" />
+      <div v-for="i in DEFAULT_PAGE_SIZE" v-if="store.listQueuesLoading">
+        <QueueCardShimmer />
+      </div>
       <div v-for="queue in queues.items" :key="queue.id" v-else>
         <QueueCard :queue="queue" />
       </div>
@@ -53,6 +55,7 @@ export default {
   setup() {
     const store = useQueueStore()
     const { queues } = storeToRefs(store)
+    const DEFAULT_PAGE_SIZE = parseInt(import.meta.env.VITE_DEFAULT_PAGE_SIZE) || 5;
 
     // Флаг управления: true — управление, false — просмотр (по умолчанию)
     const manage = ref(false)
@@ -65,7 +68,7 @@ export default {
 
     // Загрузка очередей с учётом manage
     const fetchQueues = async (offset = 0) => {
-      const params = { offset }
+      const params = { offset, limit: DEFAULT_PAGE_SIZE }
       if (manage.value) params.manage = true
       await store.fetchQueues(params)
     }
@@ -77,7 +80,8 @@ export default {
       store,
       manage,
       setManage,
-      fetchQueues
+      fetchQueues,
+      DEFAULT_PAGE_SIZE
     }
   }
 }
