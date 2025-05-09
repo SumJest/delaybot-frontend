@@ -16,8 +16,10 @@ function toggleShimmer(el, isLoading) {
 
         // Сохраняем старый стиль
         el.__originalOpacity = el.style.opacity;
+        el.__originalBackgroundColor = el.style.backgroundColor;
         el.style.color = 'transparent'; // скроет текст
         el.style.userSelect = 'none';
+        el.style.backgroundColor = 'transparent';
 
         const overlay = document.createElement('div');
         overlay.className = 'shimmer-overlay';
@@ -29,7 +31,8 @@ function toggleShimmer(el, isLoading) {
         el.style.color = ''; // вернём цвет текста
         el.style.userSelect = '';
         if (el.__originalOpacity) el.style.opacity = el.__originalOpacity;
-
+        if (el.__originalBackgroundColor) el.style.backgroundColor = el.__originalBackgroundColor;
+        else el.style.backgroundColor = '';
         el.removeChild(el.__shimmerOverlay);
         delete el.__shimmerOverlay;
     }

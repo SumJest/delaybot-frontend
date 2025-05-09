@@ -69,7 +69,7 @@
               :is-loading="fetchUserLoading"
               class="add-id-button"
             >
-              Добавить
+              Ок
             </WaveButton>
           </div>
         </template>

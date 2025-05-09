@@ -166,7 +166,7 @@ const close = () => {
 }
 
 .modal-content {
-  background: var(--tg-theme-bg-color);
+  background: var(--tg-theme-secondary-bg-color);
   border-radius: var(--tg-border-radius);
   width: 400px;
   max-width: 95%;
@@ -229,7 +229,7 @@ const close = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--tg-theme-secondary-bg-color);
+  background-color: var(--tg-theme-bg-color);
   border-radius: 10px;
   transition: background-color 0.2s;
 }
@@ -240,7 +240,7 @@ const close = () => {
   width: 16px;
   left: 2px;
   top: 2px;
-  background-color: var(--tg-theme-bg-color);
+  background-color: var(--tg-theme-secondary-bg-color);
   border-radius: 50%;
   transition: transform 0.2s;
 }
@@ -279,8 +279,8 @@ const close = () => {
   width: 100%;
   padding: 0.75rem;
   border-radius: var(--tg-border-radius);
-  border: 1px solid var(--tg-theme-secondary-bg-color);
-  background: var(--tg-theme-secondary-bg-color);
+  border: 1px solid var(--tg-theme-bg-color);
+  background: var(--tg-theme-bg-color);
   color: var(--tg-theme-text-color);
   padding-right: 40px;
 }
