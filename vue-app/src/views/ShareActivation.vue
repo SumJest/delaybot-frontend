@@ -20,15 +20,28 @@
         </div>
       </template>
 
-      <template v-else-if="success">
+      <template v-else-if="startLink">
+        <div class="info-message">
+          <svg width="48" height="48" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13l-1.41 1.41L11 11.83V7h2v3.17l4.59 4.59z"/>
+          </svg>
+          <h3>Нужно запустить бота</h3>
+          <p>Для завершения активации доступа нажмите на кнопку ниже:</p>
+          <a :href="startLink" class="tg-button">
+            Открыть чат с ботом
+          </a>
+        </div>
+      </template>
+
+      <template v-else>
         <div class="success-message">
           <svg width="48" height="48" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
           <h3>Доступ активирован!</h3>
-          <p>Теперь вы можете управлять очередью</p>
-          <button class="tg-button" @click="goToQueue">
-            Перейти к очереди
+          <p>Теперь вы можете управлять очередью в боте.</p>
+          <button class="tg-button" @click="goHome">
+            На главную
           </button>
         </div>
       </template>
@@ -46,8 +59,7 @@ const router = useRouter()
 
 const loading = ref(true)
 const error = ref(null)
-const success = ref(false)
-const queueId = ref(null)
+const startLink = ref(null)
 
 onMounted(async () => {
   try {
@@ -56,9 +68,8 @@ onMounted(async () => {
       throw new Error('Токен не предоставлен')
     }
 
-    const response = await activateShareQueue({ token })
-    queueId.value = response.queue_id
-    success.value = true
+    const response = await activateShareQueue({token})
+    startLink.value = response.start_link
   } catch (err) {
     error.value = err.response?.data?.detail || err.message
   } finally {
@@ -68,14 +79,6 @@ onMounted(async () => {
 
 const goHome = () => {
   router.push('/')
-}
-
-const goToQueue = () => {
-  if (queueId.value) {
-    router.push(`/queue/${queueId.value}`)
-  } else {
-    goHome()
-  }
 }
 </script>
 
@@ -93,7 +96,8 @@ const goToQueue = () => {
 }
 
 .error-message,
-.success-message {
+.success-message,
+.info-message {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,7 +112,17 @@ const goToQueue = () => {
   fill: #4caf50;
 }
 
+.info-message svg {
+  fill: #ff9800;
+}
+
 .tg-button {
   margin-top: 16px;
+  display: inline-block;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
 }
 </style>
