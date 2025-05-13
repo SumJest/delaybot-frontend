@@ -5,6 +5,8 @@ import router from './router'
 import './assets/telegram.css'
 import shimmerDirective from './directives/shimmer'
 import './assets/shimmer.css'
+import { isMobilePlatform } from './utils/helpers.js'
+
 const app = createApp(App)
 
 app.use(createPinia())
@@ -16,9 +18,7 @@ if (window.Telegram?.WebApp?.initData) {
   Telegram.WebApp.expand()
   Telegram.WebApp.disableClosingConfirmation()
   Telegram.WebApp.disableVerticalSwipes()
-  Telegram.WebApp.requestFullscreen()
-
-  console.log()
+  if(isMobilePlatform()) {Telegram.WebApp.requestFullscreen()}
 } else {
   router.push({name: 'ErrorPage', query: {reason: 'uninitialized'}})
 }

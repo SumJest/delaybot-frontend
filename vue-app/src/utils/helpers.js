@@ -94,13 +94,24 @@ function offsetDay(date, offset) {
 
 
 
-export const initTelegramWebApp = () => {
-  if (window.Telegram?.WebApp?.initData) {
-    Telegram.WebApp.ready()
-    Telegram.WebApp.expand()
-    Telegram.WebApp.enableClosingConfirmation()
-  }
+/**
+ * Возвращает true, если Web App запущен в мобильном приложении (Android или iOS).
+ */
+export function isMobilePlatform() {
+  const p = Telegram.WebApp.platform;
+  console.log(p, p === "android" || p === "ios")
+  return p === "android" || p === "ios";
 }
+
+/**
+ * Возвращает true, если Web App запущен в десктопном клиенте (Desktop или Web).
+ */
+export function isDesktopPlatform() {
+  // явное указание для десктопа
+  const p = Telegram.WebApp.platform;
+  return p === "tdesktop" || p === "web";
+}
+
 export const debounce = (callback, wait) => {
   let timeoutId = null;
   return (...args) => {

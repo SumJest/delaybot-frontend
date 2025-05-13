@@ -19,12 +19,7 @@
       </div>
       <div class="arrow">
         <!-- стрелочка, чтобы понять, что это ссылочный элемент -->
-        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M9.29 6.71a1 1 0 011.42-1.42l5 5a1 1 0 010 1.42l-5 5a1 1 0 11-1.42-1.42L13.59 12 9.29 7.71z"
-            fill="var(--tg-theme-hint-color)"
-          />
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="var(--tg-theme-hint-color)"/></svg>
       </div>
     </div>
   </div>

@@ -185,9 +185,10 @@ const addById = async () => {
     fetchUserLoading.value = true
     const user = await store.fetchUser(id)
     if (user) selectUser(user)
-  } catch {}
+  } catch {alert("Пользователь не найден")}
   finally {
     fetchUserLoading.value = false
+
   }
   resetForm()
 }

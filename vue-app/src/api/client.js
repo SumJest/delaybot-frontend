@@ -7,37 +7,6 @@ import router from "@/router/index.js";
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://queuebot.romaaaka.ru/api/',
 });
-http.interceptors.response.use(
-  response => response,
-  error => {
-    if (!error.response) {
-      // Нет ответа от сервера (например, сетевые ошибки)
-      return Promise.reject(error);
-    }
-
-    const { status } = error.response;
-    if (status === 401) {
-      // Неавторизованный доступ
-      router.push({
-        name: "ErrorPage",
-        query: { reason: "unauthorized" }
-      });
-    } else if (status === 404) {
-      // Ресурс не найден
-      router.push({
-        name: "ErrorPage",
-        query: { reason: "not_found" }
-      });
-    } else {
-      router.push({
-        name: "ErrorPage",
-        query: { reason: status }
-      })
-    }
-
-    return Promise.reject(error);
-  }
-);
 // Automatically attach Telegram initData header for auth on every request
 // Header name defined in OpenAPI spec: "X-Telegram-InitData" citeturn0file0
 http.interceptors.request.use(config => {
@@ -56,14 +25,14 @@ http.interceptors.response.use(
     }
 
     const { status } = error.response;
-
+    console.log(error.config?.skipGlobalErrorHandler, !error.config?.skipGlobalErrorHandler)
     if (status === 401) {
       // Неавторизованный доступ
       router.push({
         name: "ErrorPage",
         query: { reason: "unauthorized" }
       });
-    } else if (status === 404) {
+    } else if (status === 404 && !error.config?.skipGlobalErrorHandler) {
       // Ресурс не найден
       router.push({
         name: "ErrorPage",
@@ -163,7 +132,7 @@ export function deleteShareQueue(shareId) {
  * @returns {Promise<object>} QueueShareSchema
  */
 export function activateShareQueue(payload) {
-  return http.post('/queue-share/activate/', payload).then(res => res.data);
+  return http.post('/queue-share/activate/', payload, {skipGlobalErrorHandler: true}).then(res => res.data);
 }
 
 /**
@@ -181,5 +150,5 @@ export function listUsers(params = {}) {
  * @returns {Promise<object>} UserSchema
  */
 export function getUser(userId) {
-  return http.get(`/user/${userId}/`).then(res => res.data)
+  return http.get(`/user/${userId}/`, {skipGlobalErrorHandler: true}).then(res => res.data)
 }
