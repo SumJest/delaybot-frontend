@@ -68,8 +68,8 @@ const confirmDelete = () => {
   color: var(--tg-theme-text-color, #000000);
   cursor: pointer;
 }
-.tg-icon-button {
-  fill: #f9f9f9;
+.tg-icon-button svg {
+  fill: var(--tg-theme-text-color, #000000);
 }
 
 .actions-menu {

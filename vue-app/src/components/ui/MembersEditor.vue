@@ -41,7 +41,7 @@
               @click="confirmAdd(user)"
               class="suggestion-item"
             >
-              <img v-if="user.photo_url" :src="user.photo_url" class="avatar" />
+              <img :src="getUserAvatar(user.id, user.photo_url)" class="avatar" />
               <div class="user-info">
                 <div class="name">{{ user.first_name }} {{ user.last_name || '' }}</div>
                 <div class="username">@{{ user.username }}</div>
@@ -86,21 +86,22 @@
             :disabled="!canManage"
       @end="emitUpdate"
     >
-      <template #item="{ element }">
-        <MemberItem
-          :element="element"
-          :can-manage="canManage"
-          @delete="removeMember"
-        />
+      <template #item="{ element, index }">
+        <div>
+          <MemberItem
+              :element="element"
+              :can-manage="canManage"
+              @delete="removeMember"
+          />
+          <hr class="tg-separator" v-if="index < localMembers.length - 1"/>
+        </div>
+
       </template>
     </draggable>
     <MemberItemShimmer v-if="store.queueDetailsLoading"/>
     <!-- Плейсхолдер при пустом списке -->
     <p v-if="!localMembers.length && !store.queueDetailsLoading" class="empty-list">
       Список участников пуст.
-      <button class="add-btn-inline" @click="adding = true">
-        Добавьте первого участника
-      </button>
     </p>
   </div>
 </template>
@@ -113,6 +114,7 @@ import { debounce } from '@/utils/helpers.js'
 import MemberItem from '@/components/ui/MemberItem.vue'
 import MemberItemShimmer from "@/components/ui/shimmers/MemberItemShimmer.vue";
 import WaveButton from "./WaveButton.vue";
+import {getUserAvatar} from "@/utils/avatarUtils.js";
 
 const props = defineProps({
   members: { type: Array, required: true, default: () => [] },
@@ -332,6 +334,7 @@ const resetForm = () => {
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;
+  padding-inline-start: 10px
 }
 
 .suggestion-item {
@@ -339,6 +342,7 @@ const resetForm = () => {
   align-items: center;
   padding: 8px;
   cursor: pointer;
+  gap: 1rem;
 }
 
 .suggestion-item:hover {
@@ -370,5 +374,18 @@ const resetForm = () => {
 
 .drag-handle {
   cursor: grab;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+}
+svg.avatar {
+  fill: var(--tg-theme-hint-color);
+}
+hr.tg-separator {
+  border: none;
+  border-top: 1px solid var(--tg-theme-section-separator-color, #707579);
+  margin-left: 6%;
+  margin-right: 6%;
 }
 </style>

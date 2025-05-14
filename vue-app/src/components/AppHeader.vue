@@ -73,10 +73,10 @@ const handleBack = () => {
   background: none;
   border: none;
   padding: 8px;
-  color: var(--tg-theme-accent-text-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
   cursor: pointer;
 }
-.tg-back-button svg { fill: #f9f9f9; }
+.tg-back-button svg { fill: var(--tg-theme-text-color, #000000); }
 
 .tg-title {
   flex: 1;

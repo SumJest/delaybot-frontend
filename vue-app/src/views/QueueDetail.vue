@@ -10,7 +10,7 @@
     </AppHeader>
     <div class="queue-detail">
       <div class="queue-content">
-        <p class="section-header">Мета</p>
+        <p class="section-header">Информация</p>
         <div class="queue-meta section">
           <StatusBadge
               :closed="queue.closed"
@@ -50,7 +50,7 @@
           class="section"
         />
 
-        <p class="section-header" v-if="shares.items?.length || store.sharesLoading || store.queueDetailsLoading">Доступы</p>
+        <p class="section-header">Доступы</p>
         <ShareItem
             v-for="share in shares.items"
             :key="share.id"
@@ -62,7 +62,15 @@
             class="section"
         />
         <ShareItemShimmer v-if="store.queueDetailsLoading || (store.sharesLoading && shares.items?.length === 0)" class="section"/>
+        <div class="section" v-if="shares.items?.length === 0 && !store.sharesLoading && !store.queueDetailsLoading">
+          <p class="empty-list">
+            Список приглашений пуст.
+            <button class="add-btn-inline" v-if="queue.can_manage" @click="showShareModal = true">
+              Поделитесь очередью
+            </button>
+          </p>
 
+        </div>
         <ShareLinkModal
             v-if="showShareModal"
             :queue-id="queue.id"
@@ -169,7 +177,12 @@ const handleShareCreated = async () => {
 .queue-meta {
   margin-bottom: 2rem;
 }
-
+.empty-list {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  text-align: center;
+}
 .shares-section {
   margin-top: 2rem;
 }
@@ -202,5 +215,13 @@ const handleShareCreated = async () => {
 .meta-item .icon {
   width: 18px;
   height: 18px;
+}
+.add-btn-inline {
+  background: none;
+  border: none;
+  color: var(--tg-theme-accent-text-color, #3498db);
+  font-size: 14px;
+  cursor: pointer;
+  margin: 8px 0;
 }
 </style>
