@@ -43,6 +43,7 @@ const handleToggle = () => {
   cursor: pointer;
   background: #4caf50;
   color: white;
+  min-width: 77px;
 }
 
 .status-badge.closed {

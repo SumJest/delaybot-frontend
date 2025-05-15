@@ -20,7 +20,7 @@ if (window.Telegram?.WebApp?.initData) {
   Telegram.WebApp.disableVerticalSwipes()
   if(isMobilePlatform()) {Telegram.WebApp.requestFullscreen()}
 } else {
-  router.push({name: 'ErrorPage', query: {reason: 'uninitialized'}})
+  window.location.href = '/landing.html'
 }
 
 app.mount('#app')
