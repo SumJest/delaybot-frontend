@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QueueBot Landing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; font-family: 'Roboto', sans-serif; }
+        .hero {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100vw; height: calc(100vw * 9 / 16);
+            background: linear-gradient(135deg, #2A2F4D 0%, #6C4DAC 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Abstract patterns */
+        .hero::before {
+            content: '';
+            position: absolute; width: 200px; height: 200px;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);
+            top: 20%; left: -5%; transform: rotate(45deg);
+        }
+        .hero::after {
+            content: '';
+            position: absolute; width: 300px; height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><polyline points="0,8 4,12 8,8 12,12 16,8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>') repeat;
+            bottom: -5%; right: 10%; transform: scale(2);
+        }
+        .container {
+            display: flex; width: 90%; margin: auto; position: relative; z-index: 1;
+        }
+        .left,
+        .right { flex: 1; }
+        .left {
+            color: #fff;
+            padding: 2rem;
+        }
+        h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem; line-height: 1;
+            color: #FFF;
+            text-shadow: 0 0 8px #00F7FF;
+        }
+        h2 {
+            margin-top: 0.5rem;
+            font-size: 1.5rem;
+            color: #ccc;
+        }
+        ul.features {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+        ul.features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+        ul.features li svg {
+            width: 24px; height: 24px;
+            margin-right: 0.75rem;
+            fill: #00F7FF;
+        }
+        .cta {
+            display: inline-block;
+            margin-top: 2rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            text-decoration: none;
+            background: #00F7FF;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .right {
+            position: relative;
+            padding: 2rem;
+        }
+        .icon-group {
+            display: flex; align-items: center; justify-content: space-around;
+            margin-bottom: 2rem;
+        }
+        .icon-group svg {
+            width: 64px; height: 64px;
+            stroke: #fff; stroke-width: 2;
+            fill: none;
+        }
+        .panel {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .panel .buttons {
+            display: flex; gap: 0.5rem; margin-bottom: 1rem;
+        }
+        .panel button {
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 0.5rem;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .panel button.add {
+            background: #00F7FF;
+        }
+        .panel .list {
+            list-style: none;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+        .panel .list li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<section class="hero">
+    <div class="container">
+        <div class="left">
+            <h1>QUEUEBOT</h1>
+            <h2>Управляй очередями в Telegram</h2>
+            <ul class="features">
+                <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Запись за 1 клик</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Прозрачность для группы</li>
+                <li><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Полный контроль во встроенном интерфейсе</li>
+            </ul>
+            <a href="https://t.me/queueeebot" class="cta">Начать → @queueeebot</a>
+        </div>
+        <div class="right">
+            <div class="icon-group">
+                <!-- Calendar Icon -->
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <!-- Clock Icon -->
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="panel">
+                <div class="buttons">
+                    <button class="add">Добавить</button>
+                    <button>Удалить</button>
+                </div>
+                <div class="buttons">
+                    <button>Редактировать</button>
+                </div>
+                <ul class="list">
+                    <li>Пользователь 1</li>
+                    <li>Пользователь 2</li>
+                    <li>Пользователь 3</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
