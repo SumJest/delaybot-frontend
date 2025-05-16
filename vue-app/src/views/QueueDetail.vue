@@ -1,13 +1,15 @@
 <template>
   <div>
-    <AppHeader :title="queue.name" back-button>
-      <QueueActions
-        :queue="queue"
-        :can-manage="queue.can_manage"
-        @delete="handleDelete"
-        @share="showShareModal = true"
-      />
-    </AppHeader>
+    <div v-longpress="onLongPress" class="no-select">
+      <AppHeader :title="queue.name" back-button>
+        <QueueActions
+          :queue="queue"
+          :can-manage="queue.can_manage"
+          @delete="handleDelete"
+          @share="showShareModal = true"
+        />
+      </AppHeader>
+    </div>
     <div class="queue-detail">
       <div class="queue-content">
         <p class="section-header">Информация</p>
@@ -80,11 +82,33 @@
         />
       </div>
     </div>
+    <transition name="fade-scale">
+      <div v-if="showRenameSheet" class="popup-overlay" @click.self="cancelRename">
+        <div class="popup-card">
+          <h4 class="popup-title">Переименовать очередь</h4>
+          <input
+            v-model="newName"
+            @keyup.enter="saveName"
+            ref="sheetInput"
+            class="popup-input"
+            placeholder="Новое название"
+          />
+          <div class="sheet-actions">
+            <button class="btn btn-cancel" @click="cancelRename" :disabled="saving">
+              Отмена
+            </button>
+            <button class="btn btn-save" @click="saveName" :disabled="saving || !newName.trim()">
+              {{ saving ? 'Сохраняем…' : 'Сохранить' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQueueStore } from '@/stores/queueStore'
 import { formatDate } from '@/utils/helpers'
@@ -101,16 +125,62 @@ const route = useRoute()
 const router = useRouter()
 const store = useQueueStore()
 
+const queue = ref({ members: [] })
+const shares = ref({ items: [] })
 const showShareModal = ref(false)
 const selectedShare = ref(null)
 
-const queue = ref({ members: [] })
+const showRenameSheet = ref(false)
+const newName = ref('')
+const saving = ref(false)
+const sheetInput = ref(null)
 
-const shares = ref({ items: [] })
+onMounted(async () => {
+  await store.fetchQueueDetails(route.params.id)
+  queue.value = {
+    ...store.currentQueue,
+    members: [...store.currentQueue.members]
+  }
+  await store.fetchShares(route.params.id)
+  shares.value = store.shares
+})
 
-const openViewShareModal = (share) => {
-  selectedShare.value = share
-  showShareModal.value = true
+const onLongPress = () => {
+  // 1) Haptic Feedback
+  const H = window.Telegram?.WebApp?.HapticFeedback;
+  if (H && H.impactOccurred) {
+    H.impactOccurred('light');
+  }
+  // 2) открываем попап
+  if (queue.value.can_manage) {
+    showRenameSheet.value = true;
+  }
+};
+watch(showRenameSheet, async (val) => {
+  if (val) {
+    newName.value = queue.value.name
+    await nextTick()
+    sheetInput.value?.focus()
+  }
+})
+
+const saveName = async () => {
+  const name = newName.value.trim();
+  if (!name || name === queue.value.name) {
+    return cancelRename();
+  }
+  saving.value = true;
+  try {
+    await store.updateCurrentQueue({ name });
+    queue.value.name = name;
+  } finally {
+    saving.value = false;
+    showRenameSheet.value = false;
+  }
+};
+
+const cancelRename = () => {
+  showRenameSheet.value = false
 }
 
 onMounted(async () => {
@@ -161,6 +231,81 @@ const handleShareCreated = async () => {
 </script>
 
 <style scoped>
+.header-wrapper {
+  /* чтобы захватить весь AppHeader */
+}
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.popup-card {
+  background: var(--tg-theme-secondary-bg-color);
+  color: var(--tg-theme-text-color);
+  border-radius: var(--tg-border-radius);
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transform-origin: center center;
+}
+
+.popup-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  color: var(--tg-theme-secondary-text-color);
+}
+
+.popup-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid var(--tg-theme-hint-color);
+  border-radius: 6px;
+  background: var(--tg-theme-input-bg-color, #fff);
+  color: var(--tg-theme-input-text-color, #000);
+  outline: none;
+}
+
+.sheet-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--tg-border-radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: var(--tg-theme-button-secondary-bg-color, #f0f0f0);
+  color: var(--tg-theme-button-secondary-text-color, #555);
+}
+
+.btn-save {
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color, #fff);
+}
+
+/* Анимация */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.2s ease;
+}
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
 .section-header{
   color: var(--tg-theme-subtitle-text-color);
   font-weight: lighter;
