@@ -77,14 +77,22 @@
     </div>
 
     <!-- Список текущих участников -->
+    <!--      -->
     <draggable
       v-model="localMembers"
       handle=".drag-handle"
       item-key="id"
-      class="members-list"
+      class="members-list no-select"
+      delay="300"
+      chosen-class="drag-chosen"
+      ghost-class="drag-ghost"
+      drag-class="drag-dragging"
+      delay-on-touch-only="true"
+      forceFallback="true"
       v-if="!store.queueDetailsLoading"
-            :disabled="!canManage"
+      :disabled="!canManage"
       @end="emitUpdate"
+      @choose="makeHaptic"
     >
       <template #item="{ element, index }">
         <div>
@@ -136,6 +144,10 @@ watch(
   (newVal) => { localMembers.value = [...newVal] },
   { deep: true }
 )
+
+function makeHaptic(evt) {
+  Telegram.WebApp.HapticFeedback.impactOccurred('medium')
+}
 
 const emitUpdate = () => emit('update', localMembers.value)
 
@@ -202,6 +214,13 @@ const resetForm = () => {
   suggestions.value = []
   mode.value = 'username'
 }
+
+const sortableOptions = {
+  delay: 300,
+  touchStartThreshold: 5,
+  forceFallback: true,
+}
+
 </script>
 
 
@@ -371,10 +390,6 @@ const resetForm = () => {
   color: var(--tg-theme-hint-color);
   text-align: center;
 }
-
-.drag-handle {
-  cursor: grab;
-}
 .avatar {
   width: 40px;
   height: 40px;
@@ -382,6 +397,41 @@ const resetForm = () => {
 svg.avatar {
   fill: var(--tg-theme-hint-color);
 }
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--tg-theme-secondary-bg-color);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.member-row.is-dragging {
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  transform: scale(1.02);
+}
+
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+  padding: 4px;
+  color: var(--tg-theme-hint-color);
+}
+
+.drag-chosen {
+  opacity: 0.6;
+}
+
+.drag-ghost {
+  opacity: 0.4;
+}
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
 hr.tg-separator {
   border: none;
   border-top: 1px solid var(--tg-theme-section-separator-color, #707579);
