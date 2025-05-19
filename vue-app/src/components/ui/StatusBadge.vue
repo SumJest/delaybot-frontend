@@ -5,7 +5,7 @@
     @click="handleToggle"
     :is-loading="toggleLoading"
   >
-    {{ closed ? 'Закрыта' : 'Активна' }}
+    {{ closed ? 'Закрыта' : 'Открыта' }}
   </WaveButton>
 </template>
 

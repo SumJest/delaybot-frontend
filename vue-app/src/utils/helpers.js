@@ -7,7 +7,7 @@ export const formatDate = (dateString) => {
   const absDiffMs = Math.abs(diffMs);
   const diffSec = Math.floor(absDiffMs / 1000);
   const diffMin = Math.floor(diffSec / 60);
-  const diffHrs = Math.floor(diffMin / 3600);
+  const diffHrs = Math.floor(diffMin / 60);
 
   // Именительный падеж для прошедших
   const weekdaysNom = [
