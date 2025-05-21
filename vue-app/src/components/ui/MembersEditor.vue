@@ -91,6 +91,7 @@
       forceFallback="true"
       v-if="!store.queueDetailsLoading"
       :disabled="!canManage"
+      :move="makeHaptic"
       @end="emitUpdate"
       @choose="makeHaptic"
     >
