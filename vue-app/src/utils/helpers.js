@@ -1,5 +1,3 @@
-import {Base64UrlSafe} from "@aecworks/base64-url-safe";
-
 export const formatDate = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();

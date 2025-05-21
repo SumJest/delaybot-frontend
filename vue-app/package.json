@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aecworks/base64-url-safe": "^1.0.1",
     "@vueuse/core": "^13.1.0",
     "axios": "^1.8.4",
     "lodash-es": "^4.17.21",
