@@ -228,6 +228,11 @@ const handleShareCreated = async () => {
   shares.value = store.shares
 }
 
+const openViewShareModal = (share) => {
+  selectedShare.value = share
+  showShareModal.value = true
+}
+
 </script>
 
 <style scoped>
